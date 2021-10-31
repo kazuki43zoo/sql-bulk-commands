@@ -92,7 +92,7 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("  ------------------------");
       System.out.println();
       System.out.println("[Usage: deleting-columns]");
-      System.out.println("  Deleting specified existing column using column-names.");
+      System.out.println("  Deleting specified existing column using column-names(or column-positions).");
       System.out.println(
           "  e.g.) --command=deleting-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b");
       System.out.println(
@@ -106,7 +106,7 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("  ------------------------");
       System.out.println();
       System.out.println("[Usage: updating-columns]");
-      System.out.println("  Updating value specified existing column using column-names and column-values.");
+      System.out.println("  Updating value specified existing column using column-names(or column-positions) and column-values.");
       System.out.println(
           "  e.g.) --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b --column-values=NULL");
       System.out.println(
@@ -120,7 +120,7 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("  ------------------------");
       System.out.println();
       System.out.println("[Usage: ordering-columns]");
-      System.out.println("  Ordering column specified order using column-names.");
+      System.out.println("  Ordering column specified order using column-names(or column-positions).");
       System.out.println(
           "  e.g.) --command=ordering-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=c,a,b");
       System.out.println(

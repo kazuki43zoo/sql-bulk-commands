@@ -123,7 +123,7 @@ Search files that matches conditions specified by `--dir` and `--files`.
   ------------------------
 
 [Usage: deleting-columns]
-  Deleting specified existing column using column-names.
+  Deleting specified existing column using column-names(or column-positions).
   e.g.) --command=deleting-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b
         --command=deleting-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=2
   ------------------------
@@ -135,7 +135,7 @@ Search files that matches conditions specified by `--dir` and `--files`.
   ------------------------
 
 [Usage: updating-columns]
-  Updating value specified existing column using column-names and column-values.
+  Updating value specified existing column using column-names(or column-positions) and column-values.
   e.g.) --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b --column-values=NULL
         --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=2 --column-values=NULL
   ------------------------
@@ -147,7 +147,7 @@ Search files that matches conditions specified by `--dir` and `--files`.
   ------------------------
 
 [Usage: ordering-columns]
-  Ordering column specified order using column-names.
+  Ordering column specified order using column-names(or column-positions).
   e.g.) --command=ordering-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=c,a,b
         --command=ordering-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=3,1,2
   ------------------------
