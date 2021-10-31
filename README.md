@@ -115,11 +115,11 @@ Search files that matches conditions specified by `--dir` and `--files`.
   Adding specified new column using column-names and column-values.
   e.g.) --command=adding-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b,c --column-values=1,#a
   ------------------------
-  insert into xxxx (a) values('123')
+  insert into xxxx (a) values('123');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '123')
+  insert into xxxx (a, b, c) values ('123', 1, '123');
   ------------------------
 
 [Usage: deleting-columns]
@@ -127,11 +127,11 @@ Search files that matches conditions specified by `--dir` and `--files`.
   e.g.) --command=deleting-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b
         --command=deleting-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=2
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '0')
+  insert into xxxx (a, b, c) values ('123', 1, '0');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (a, c) values ('123', '0')
+  insert into xxxx (a, c) values ('123', '0');
   ------------------------
 
 [Usage: updating-columns]
@@ -139,11 +139,11 @@ Search files that matches conditions specified by `--dir` and `--files`.
   e.g.) --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b --column-values=NULL
         --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=2 --column-values=NULL
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '0')
+  insert into xxxx (a, b, c) values ('123', 1, '0');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (a, b, c) values ('123', NULL, '0')
+  insert into xxxx (a, b, c) values ('123', NULL, '0');
   ------------------------
 
 [Usage: ordering-columns]
@@ -151,11 +151,11 @@ Search files that matches conditions specified by `--dir` and `--files`.
   e.g.) --command=ordering-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=c,a,b
         --command=ordering-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=3,1,2
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '0')
+  insert into xxxx (a, b, c) values ('123', 1, '0');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (c, a, b) values ('0', '123', 1)
+  insert into xxxx (c, a, b) values ('0', '123', 1);
   ------------------------
 
 [Usage: formatting]
@@ -163,11 +163,11 @@ Search files that matches conditions specified by `--dir` and `--files`.
   e.g.) --command=formatting --dir=src/test/resources/data --files=xxx.sql,yyy.sql
   ------------------------
   insert into xxxx
-     (a,b,c) values ('123',    1,    '0')
+     (a,b,c) values ('123',    1,    '0');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '0')
+  insert into xxxx (a, b, c) values ('123', 1, '0');
   ------------------------
 
 [INFO] ------------------------------------------------------------------------
