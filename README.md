@@ -185,6 +185,6 @@ $ ./mvnw clean verify -DskipTests
 ```
 
 ```
-$ java -jar target/json-bulk-commands.jar
+$ java -jar target/sql-bulk-commands.jar
 ```
 
