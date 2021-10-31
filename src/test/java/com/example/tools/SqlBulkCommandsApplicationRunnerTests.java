@@ -19,7 +19,7 @@ class SqlBulkCommandsApplicationRunnerTests {
 
   @Test
   void addingColumns2() throws IOException {
-    String[] args = { "--command=adding-columns", "--files=a.sql", "--column-names=d",
+    String[] args = { "--command=adding-columns", "--files=b.sql", "--column-names=d",
         "--column-values=#_valueMappings[foo][#a]",
         "--dir=target/test-classes/data", "--value-mapping-files=src/test/resources/value-mappings.yml",
         "--table-definition-files=src/test/resources/table-definitions.yml" };
@@ -28,7 +28,7 @@ class SqlBulkCommandsApplicationRunnerTests {
 
   @Test
   void addingColumnsWithIndexedRef() throws IOException {
-    String[] args = { "--command=adding-columns", "--files=a.sql", "--column-names=d",
+    String[] args = { "--command=adding-columns", "--files=c.sql", "--column-names=d",
         "--column-values=#column1",
         "--dir=target/test-classes/data" };
     runner.run(new DefaultApplicationArguments(args));
@@ -36,7 +36,7 @@ class SqlBulkCommandsApplicationRunnerTests {
 
   @Test
   void updatingColumns() throws IOException {
-    String[] args = { "--command=updating-columns", "--files=a.sql", "--column-names=a,b",
+    String[] args = { "--command=updating-columns", "--files=d.sql", "--column-names=a,b",
         "--column-values=#_valueMappings[foo][#a]?:#a,T(java.lang.Integer).parseInt(#b)*10",
         "--dir=target/test-classes/data", "--value-mapping-files=src/test/resources/value-mappings.yml",
         "--table-definition-files=src/test/resources/table-definitions.yml" };
@@ -45,7 +45,7 @@ class SqlBulkCommandsApplicationRunnerTests {
 
   @Test
   void updatingColumnsWithIndexes() throws IOException {
-    String[] args = { "--command=updating-columns", "--files=a.sql", "--column-positions=1,2",
+    String[] args = { "--command=updating-columns", "--files=e.sql", "--column-positions=1,2",
         "--column-values=#_valueMappings[foo][#column1]?:#column0,T(java.lang.Integer).parseInt(#column2)*10",
         "--dir=target/test-classes/data", "--value-mapping-files=src/test/resources/value-mappings.yml" };
     runner.run(new DefaultApplicationArguments(args));
@@ -53,7 +53,7 @@ class SqlBulkCommandsApplicationRunnerTests {
 
   @Test
   void deletingColumns() throws IOException {
-    String[] args = { "--command=deleting-columns", "--files=a.sql", "--column-names=c",
+    String[] args = { "--command=deleting-columns", "--files=h.sql", "--column-names=c",
         "--dir=target/test-classes/data",
         "--table-definition-files=src/test/resources/table-definitions.yml" };
     runner.run(new DefaultApplicationArguments(args));
@@ -61,14 +61,14 @@ class SqlBulkCommandsApplicationRunnerTests {
 
   @Test
   void deletingColumnsWithIndexes() throws IOException {
-    String[] args = { "--command=deleting-columns", "--files=a.sql", "--column-positions=3",
+    String[] args = { "--command=deleting-columns", "--files=i.sql", "--column-positions=3",
         "--dir=target/test-classes/data" };
     runner.run(new DefaultApplicationArguments(args));
   }
 
   @Test
   void orderingColumns() throws IOException {
-    String[] args = { "--command=ordering-columns", "--files=a.sql", "--column-names=c,a,b",
+    String[] args = { "--command=ordering-columns", "--files=j.sql", "--column-names=c,a,b",
         "--dir=target/test-classes/data",
         "--table-definition-files=src/test/resources/table-definitions.yml" };
     runner.run(new DefaultApplicationArguments(args));
@@ -76,14 +76,14 @@ class SqlBulkCommandsApplicationRunnerTests {
 
   @Test
   void orderingColumnsWithColumnIndexes() throws IOException {
-    String[] args = { "--command=ordering-columns", "--files=a.sql", "--column-positions=3,1,2",
+    String[] args = { "--command=ordering-columns", "--files=k.sql", "--column-positions=3,1,2",
         "--dir=target/test-classes/data" };
     runner.run(new DefaultApplicationArguments(args));
   }
 
   @Test
   void formatting() throws IOException {
-    String[] args = { "--command=formatting", "--files=a.sql",
+    String[] args = { "--command=formatting", "--files=l.sql",
         "--dir=target/test-classes/data" };
     runner.run(new DefaultApplicationArguments(args));
   }
