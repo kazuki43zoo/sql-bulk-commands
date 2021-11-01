@@ -1,5 +1,10 @@
 -- aaaa
 INSERT INTO xxxx
-  VALUES ('10','1',null);
+  VALUES('10','1',CURRENT_TIMESTAMP());
+
+
+
+
 /* bbb */
-INSERT INTO xxxx (a,   b,    c) VALUES (  '20',   2,   NULL);
+INSERT INTO xxxx (a,   b,    c) VALUES (  '20',   2,   CURRENT_TIMESTAMP());
+

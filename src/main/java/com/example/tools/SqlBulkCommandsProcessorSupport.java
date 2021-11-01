@@ -23,10 +23,12 @@ import java.util.stream.Collectors;
 abstract class SqlBulkCommandsProcessorSupport {
 
   // for "insert into xxxx values (....);"
-  private static final Pattern VALUES_PATTERN = Pattern.compile("(.*\\()(.*)(\\).*)");
+  private static final Pattern VALUES_PATTERN = Pattern.compile("(^.+values *\\()(.+)(\\);$)",
+      Pattern.CASE_INSENSITIVE);
 
   // for "insert into xxxx (...) values (....);"
-  private static final Pattern COLUMNS_VALUES_PATTERN = Pattern.compile("(.*\\()(.*)(\\).*\\()(.*)(\\).*)");
+  private static final Pattern COLUMNS_VALUES_PATTERN = Pattern.compile("(^.+\\()(.+)(\\) +values *\\()(.+)(\\);$)",
+      Pattern.CASE_INSENSITIVE);
 
   private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
 
