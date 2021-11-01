@@ -95,7 +95,7 @@ abstract class SqlBulkCommandsProcessorSupport {
             }
           }
         } else {
-          logger.info("Skip operation because does not support sql type. sql:" + line);
+          saveLines.add(line);
         }
       }
 
