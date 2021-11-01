@@ -10,8 +10,8 @@ Support following features.
 * Deleting columns
 * Updating columns by specified expression(fixed value or dynamic value)
 * Ordering columns
-* Formatting sql to one line format and separate column list using `', '`
-* Supports column position based operations for sql without column list such as `"insert into xxxx values('123', NULL, '0');"`
+* Formatting sql to one line format and separate column list using `','`
+* Supports column position based operations for sql without column list such as `"insert into xxxx values('123',NULL,'0');"`
 * Supports position based column value reference (variable name format: `column{position}`) such as `--column-values=#column1`
 
 > **NOTE:**
@@ -119,7 +119,7 @@ Search files that matches conditions specified by `--dir` and `--files`.
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '123');
+  insert into xxxx (a,b,c) values ('123',1,'123');
   ------------------------
 
 [Usage: deleting-columns]
@@ -127,11 +127,11 @@ Search files that matches conditions specified by `--dir` and `--files`.
   e.g.) --command=deleting-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b
         --command=deleting-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=2
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '0');
+  insert into xxxx (a,b,c) values ('123',1,'0');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (a, c) values ('123', '0');
+  insert into xxxx (a,c) values ('123','0');
   ------------------------
 
 [Usage: updating-columns]
@@ -139,11 +139,11 @@ Search files that matches conditions specified by `--dir` and `--files`.
   e.g.) --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b --column-values=NULL
         --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=2 --column-values=NULL
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '0');
+  insert into xxxx (a,b,c) values ('123',1,'0');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (a, b, c) values ('123', NULL, '0');
+  insert into xxxx (a,b,c) values ('123',NULL,'0');
   ------------------------
 
 [Usage: ordering-columns]
@@ -151,24 +151,25 @@ Search files that matches conditions specified by `--dir` and `--files`.
   e.g.) --command=ordering-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=c,a,b
         --command=ordering-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=3,1,2
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '0');
+  insert into xxxx (a,b,c) values ('123',1,'0');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (c, a, b) values ('0', '123', 1);
+  insert into xxxx (c,a,b) values ('0','123',1);
   ------------------------
 
 [Usage: formatting]
-  Formatting sql to one line format and separate column list using ', '.
+  Formatting sql to one line format and separate column list using ','.
   e.g.) --command=formatting --dir=src/test/resources/data --files=xxx.sql,yyy.sql
   ------------------------
   insert into xxxx
-     (a,b,c) values ('123',    1,    '0');
+     (a, b,  c) values ('123',    1,    '0');
   ------------------------
     ↓
   ------------------------
-  insert into xxxx (a, b, c) values ('123', 1, '0');
+  insert into xxxx (a,b,c) values ('123',1,'0');
   ------------------------
+
 
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS

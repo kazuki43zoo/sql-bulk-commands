@@ -155,7 +155,7 @@ abstract class SqlBulkCommandsProcessorSupport {
       List<String> valueColumns) {
     return MessageFormat.format(sqlTemplate,
         columns == null ?
-            new Object[] { String.join(", ", valueColumns) } :
-            new Object[] { String.join(", ", headerColumns), String.join(", ", valueColumns) });
+            new Object[] { String.join(",", valueColumns) } :
+            new Object[] { String.join(",", headerColumns), String.join(",", valueColumns) });
   }
 }

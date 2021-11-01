@@ -88,7 +88,7 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("  ------------------------");
       System.out.println("    ↓");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx (a, b, c) values ('123', 1, '123');");
+      System.out.println("  insert into xxxx (a,b,c) values ('123',1,'123');");
       System.out.println("  ------------------------");
       System.out.println();
       System.out.println("[Usage: deleting-columns]");
@@ -98,11 +98,11 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println(
           "        --command=deleting-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=2");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx (a, b, c) values ('123', 1, '0');");
+      System.out.println("  insert into xxxx (a,b,c) values ('123',1,'0');");
       System.out.println("  ------------------------");
       System.out.println("    ↓");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx (a, c) values ('123', '0');");
+      System.out.println("  insert into xxxx (a,c) values ('123','0');");
       System.out.println("  ------------------------");
       System.out.println();
       System.out.println("[Usage: updating-columns]");
@@ -112,11 +112,11 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println(
           "        --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=2 --column-values=NULL");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx (a, b, c) values ('123', 1, '0');");
+      System.out.println("  insert into xxxx (a,b,c) values ('123',1,'0');");
       System.out.println("  ------------------------");
       System.out.println("    ↓");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx (a, b, c) values ('123', NULL, '0');");
+      System.out.println("  insert into xxxx (a,b,c) values ('123',NULL,'0');");
       System.out.println("  ------------------------");
       System.out.println();
       System.out.println("[Usage: ordering-columns]");
@@ -126,23 +126,23 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println(
           "        --command=ordering-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-positions=3,1,2");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx (a, b, c) values ('123', 1, '0');");
+      System.out.println("  insert into xxxx (a,b,c) values ('123',1,'0');");
       System.out.println("  ------------------------");
       System.out.println("    ↓");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx (c, a, b) values ('0', '123', 1);");
+      System.out.println("  insert into xxxx (c,a,b) values ('0','123',1);");
       System.out.println("  ------------------------");
       System.out.println();
       System.out.println("[Usage: formatting]");
-      System.out.println("  Formatting sql to one line format and separate column list using ', '.");
+      System.out.println("  Formatting sql to one line format and separate column list using ','.");
       System.out.println(
           "  e.g.) --command=formatting --dir=src/test/resources/data --files=xxx.sql,yyy.sql");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx\n     (a,b,c) values ('123',    1,    '0');");
+      System.out.println("  insert into xxxx\n     (a, b,  c) values ('123',    1,    '0');");
       System.out.println("  ------------------------");
       System.out.println("    ↓");
       System.out.println("  ------------------------");
-      System.out.println("  insert into xxxx (a, b, c) values ('123', 1, '0');");
+      System.out.println("  insert into xxxx (a,b,c) values ('123',1,'0');");
       System.out.println("  ------------------------");
       System.out.println();
       return;
