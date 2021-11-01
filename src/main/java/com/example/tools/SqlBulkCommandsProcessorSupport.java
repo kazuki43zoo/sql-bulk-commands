@@ -95,11 +95,9 @@ abstract class SqlBulkCommandsProcessorSupport {
             }
           }
         } else {
-          throw new UnsupportedOperationException("Detects unsupported sql type. sql:" + line);
+          logger.info("Skip operation because does not support sql type. sql:" + line);
         }
       }
-
-      saveLines.forEach(System.out::println);
 
       Files.write(file, saveLines, encoding);
     }
