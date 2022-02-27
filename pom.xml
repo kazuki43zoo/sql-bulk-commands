@@ -43,6 +43,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <executable>true</executable>
                     <classifier>${repackage.classifier}</classifier>
                     <image>
                         <builder>paketobuildpacks/builder:tiny</builder>
