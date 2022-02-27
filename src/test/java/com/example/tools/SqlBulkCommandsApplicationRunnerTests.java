@@ -27,6 +27,42 @@ class SqlBulkCommandsApplicationRunnerTests {
   }
 
   @Test
+  void addingColumns3() throws IOException {
+    String[] args = { "--command=adding-columns", "--files=m.sql", "--column-names=d",
+        "--column-values='0'",
+        "--first",
+        "--dir=target/test-classes/data" };
+    runner.run(new DefaultApplicationArguments(args));
+  }
+
+  @Test
+  void addingColumns4() throws IOException {
+    String[] args = { "--command=adding-columns", "--files=n.sql", "--column-names=d",
+        "--column-values='0'",
+        "--after-by-name=b",
+        "--dir=target/test-classes/data" };
+    runner.run(new DefaultApplicationArguments(args));
+  }
+
+  @Test
+  void addingColumns5() throws IOException {
+    String[] args = { "--command=adding-columns", "--files=o.sql", "--column-names=d",
+        "--column-values='0'",
+        "--after-by-position=2",
+        "--dir=target/test-classes/data" };
+    runner.run(new DefaultApplicationArguments(args));
+  }
+
+  @Test
+  void addingColumns6() throws IOException {
+    String[] args = { "--command=adding-columns", "--files=p.sql", "--column-names=d",
+        "--column-values='0'",
+        "--after-by-position=3",
+        "--dir=target/test-classes/data" };
+    runner.run(new DefaultApplicationArguments(args));
+  }
+
+  @Test
   void addingColumnsWithIndexedRef() throws IOException {
     String[] args = { "--command=adding-columns", "--files=c.sql", "--column-names=d",
         "--column-values=#column1",

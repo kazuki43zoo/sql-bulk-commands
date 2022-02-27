@@ -13,6 +13,7 @@ Support following features.
 * Formatting sql to one line format and separate column list using `','`
 * Supports column position based operations for sql without column list such as `"insert into xxxx values('123',NULL,'0');"`
 * Supports position based column value reference (variable name format: `column{position}`) such as `--column-values=#column1`
+* Supports adding column at any position
 
 > **NOTE:**
 >
@@ -41,10 +42,10 @@ Search files that matches conditions specified by `--dir` and `--files`.
 [INFO] Scanning for projects...
 [INFO] 
 [INFO] -------------------< com.example:sql-bulk-commands >--------------------
-[INFO] Building sql-bulk-commands 0.0.1-SNAPSHOT
+[INFO] Building sql-bulk-commands 0.0.3-SNASPHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] >>> spring-boot-maven-plugin:2.5.6:run (default-cli) > test-compile @ sql-bulk-commands >>>
+[INFO] >>> spring-boot-maven-plugin:2.6.4:run (default-cli) > test-compile @ sql-bulk-commands >>>
 [INFO] 
 [INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ sql-bulk-commands ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -58,15 +59,15 @@ Search files that matches conditions specified by `--dir` and `--files`.
 [INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ sql-bulk-commands ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Using 'UTF-8' encoding to copy filtered properties files.
-[INFO] Copying 3 resources
+[INFO] Copying 18 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ sql-bulk-commands ---
 [INFO] Nothing to compile - all classes are up to date
 [INFO] 
-[INFO] <<< spring-boot-maven-plugin:2.5.6:run (default-cli) < test-compile @ sql-bulk-commands <<<
+[INFO] <<< spring-boot-maven-plugin:2.6.4:run (default-cli) < test-compile @ sql-bulk-commands <<<
 [INFO] 
 [INFO] 
-[INFO] --- spring-boot-maven-plugin:2.5.6:run (default-cli) @ sql-bulk-commands ---
+[INFO] --- spring-boot-maven-plugin:2.6.4:run (default-cli) @ sql-bulk-commands ---
 [INFO] Attaching agents: []
 
 [Command arguments]
@@ -103,6 +104,12 @@ Search files that matches conditions specified by `--dir` and `--files`.
          - id
          - vendor_id
          - amount
+  --first
+       indicate that adding column at first position
+  --after-by-name
+       indicate that adding column at after specified column name
+  --after-by-position
+       indicate that adding column at after specified column position
   --h (--help)
        print help
 
@@ -120,6 +127,25 @@ Search files that matches conditions specified by `--dir` and `--files`.
     ↓
   ------------------------
   insert into xxxx (a,b,c) values ('123',1,'123');
+  ------------------------
+
+  e.g.) --command=adding-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=d,e --column-values=1,#a --first
+  ------------------------
+  insert into xxxx (a,b,c) values('123','1','2');
+  ------------------------
+    ↓
+  ------------------------
+  insert into xxxx (d,e,a,b,c) values (1,'123','123','1','2');
+  ------------------------
+
+  e.g.) --command=adding-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=d,e --column-values=1,#a --after-by-name=a
+        --command=adding-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=d,e --column-values=1,#a --after-by-position=1
+  ------------------------
+  insert into xxxx (a,b,c) values('123','1','2');
+  ------------------------
+    ↓
+  ------------------------
+  insert into xxxx (a,d,e,b,c) values ('123',1,'123','1','2');
   ------------------------
 
 [Usage: deleting-columns]
@@ -170,12 +196,11 @@ Search files that matches conditions specified by `--dir` and `--files`.
   insert into xxxx (a,b,c) values ('123',1,'0');
   ------------------------
 
-
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  2.828 s
-[INFO] Finished at: 2021-11-01T02:28:57+09:00
+[INFO] Total time:  1.938 s
+[INFO] Finished at: 2022-02-27T11:38:12+09:00
 [INFO] ------------------------------------------------------------------------
 ```
 

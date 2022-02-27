@@ -71,6 +71,12 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("         - id");
       System.out.println("         - vendor_id");
       System.out.println("         - amount");
+      System.out.println("  --first");
+      System.out.println("       indicate that adding column at first position");
+      System.out.println("  --after-by-name");
+      System.out.println("       indicate that adding column at after specified column name");
+      System.out.println("  --after-by-position");
+      System.out.println("       indicate that adding column at after specified column position");
       System.out.println("  --h (--help)");
       System.out.println("       print help");
       System.out.println();
@@ -91,6 +97,28 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("  insert into xxxx (a,b,c) values ('123',1,'123');");
       System.out.println("  ------------------------");
       System.out.println();
+      System.out.println(
+          "  e.g.) --command=adding-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=d,e --column-values=1,#a --first");
+      System.out.println("  ------------------------");
+      System.out.println("  insert into xxxx (a,b,c) values('123','1','2');");
+      System.out.println("  ------------------------");
+      System.out.println("    ↓");
+      System.out.println("  ------------------------");
+      System.out.println("  insert into xxxx (d,e,a,b,c) values (1,'123','123','1','2');");
+      System.out.println("  ------------------------");
+      System.out.println();
+      System.out.println(
+          "  e.g.) --command=adding-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=d,e --column-values=1,#a --after-by-name=a");
+      System.out.println(
+          "        --command=adding-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=d,e --column-values=1,#a --after-by-position=1");
+      System.out.println("  ------------------------");
+      System.out.println("  insert into xxxx (a,b,c) values('123','1','2');");
+      System.out.println("  ------------------------");
+      System.out.println("    ↓");
+      System.out.println("  ------------------------");
+      System.out.println("  insert into xxxx (a,d,e,b,c) values ('123',1,'123','1','2');");
+      System.out.println("  ------------------------");
+      System.out.println();
       System.out.println("[Usage: deleting-columns]");
       System.out.println("  Deleting specified existing column using column-names(or column-positions).");
       System.out.println(
@@ -106,7 +134,8 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("  ------------------------");
       System.out.println();
       System.out.println("[Usage: updating-columns]");
-      System.out.println("  Updating value specified existing column using column-names(or column-positions) and column-values.");
+      System.out.println(
+          "  Updating value specified existing column using column-names(or column-positions) and column-values.");
       System.out.println(
           "  e.g.) --command=updating-columns --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=b --column-values=NULL");
       System.out.println(
@@ -221,9 +250,36 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       tableDefinitions = Collections.emptyMap();
     }
 
+    final String addingMethod;
+    final String addingTarget;
+    if (args.containsOption("first")) {
+      addingMethod = "first";
+      addingTarget = null;
+    } else if (args.containsOption("after-by-name")) {
+      addingMethod = "after-by-name";
+      addingTarget = args.getOptionValues("after-by-name").stream().findFirst().orElse(null);
+      if (addingTarget == null) {
+        this.exitCode = 2;
+        LOGGER.warn("'after-by-name' is required.");
+        return;
+      }
+    } else if (args.containsOption("after-by-position")) {
+      addingMethod = "after-by-position";
+      addingTarget = args.getOptionValues("after-by-position").stream().findFirst().orElse(null);
+      if (addingTarget == null) {
+        this.exitCode = 2;
+        LOGGER.warn("'after-by-position' is required.");
+        return;
+      }
+    } else {
+      addingMethod = "last";
+      addingTarget = null;
+    }
+
     LOGGER.info(
-        "Start. command:{} dir:{} files:{} encoding:{} column-names:{} column-positions:{} column-values:{} value-mappings:{} table-definitions:{}",
-        command, dir, files, encoding, columnNames, columnPositions, columnValues, valueMappings, tableDefinitions);
+        "Start. command:{} dir:{} files:{} encoding:{} column-names:{} column-positions:{} column-values:{} value-mappings:{} table-definitions:{} adding-type:{} adding-target:{}",
+        command, dir, files, encoding, columnNames, columnPositions, columnValues, valueMappings, tableDefinitions,
+        addingMethod, addingTarget);
 
     try {
       Files.walk(Paths.get(dir))
@@ -231,7 +287,7 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
           .filter(file -> files.stream().anyMatch(x -> file.toString().replace('\\', '/').endsWith(x)))
           .sorted().forEach(
               file -> execute(command, columnNames, columnPositions, columnValues, file, encoding, valueMappings,
-                  tableDefinitions));
+                  tableDefinitions, addingMethod, addingTarget));
     }
     catch (IllegalArgumentException e) {
       this.exitCode = 2;
@@ -245,7 +301,8 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
   private void execute(String command, List<String> columnNames, List<Integer> columnPositions,
       List<String> columnValues,
       Path file, Charset encoding,
-      Map<String, Object> valueMappings, Map<String, Object> tableDefinitions) {
+      Map<String, Object> valueMappings, Map<String, Object> tableDefinitions, String addingMethod,
+      String addingTarget) {
     LOGGER.info("processing file:{}", file);
     switch (command) {
     case "adding-columns":
@@ -255,7 +312,8 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       if (columnNames.size() != columnValues.size()) {
         throw new IllegalArgumentException("'column-names' and 'column-values' should be same size.");
       }
-      AddingColumnProcessor.INSTANCE.execute(columnNames, columnPositions, columnValues, file, encoding, valueMappings,
+      AddingColumnProcessor.INSTANCE.execute(addingMethod, addingTarget, columnNames, columnPositions, columnValues,
+          file, encoding, valueMappings,
           tableDefinitions);
       break;
     case "deleting-columns":
