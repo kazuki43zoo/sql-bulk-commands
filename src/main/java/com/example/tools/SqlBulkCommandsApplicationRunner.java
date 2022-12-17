@@ -9,6 +9,7 @@ import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -267,7 +269,8 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       yamlMapFactoryBean.setResources(
           args.getOptionValues("table-definition-files").stream().map(FileSystemResource::new).toArray(
               Resource[]::new));
-      tableDefinitions = yamlMapFactoryBean.getObject();
+      tableDefinitions = new LinkedCaseInsensitiveMap<>();
+      tableDefinitions.putAll(Optional.ofNullable(yamlMapFactoryBean.getObject()).orElse(Collections.emptyMap()));
     } else {
       tableDefinitions = Collections.emptyMap();
     }
