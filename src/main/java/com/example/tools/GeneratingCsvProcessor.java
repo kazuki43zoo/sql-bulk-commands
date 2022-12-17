@@ -61,7 +61,7 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
             columns = Collections.emptyList();
             values = Arrays.stream(StringUtils.commaDelimitedListToStringArray(matcher.group(2)))
                 .map(String::trim)
-                .map(x -> x.replaceAll("^'|'$", ""))
+                .map(x -> x.replaceAll("^'|'$|^\"|\"$", ""))
                 .collect(
                     Collectors.toList());
           } else {
@@ -73,7 +73,7 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
             columns = getHeaderColumns(tableName, matcher.group(2), Collections.emptyMap());
             values = Arrays.stream(StringUtils.commaDelimitedListToStringArray(matcher.group(4)))
                 .map(String::trim)
-                .map(x -> x.replaceAll("^'|'$", ""))
+                .map(x -> x.replaceAll("^'|'$|^\"|\"$", ""))
                 .collect(
                     Collectors.toList());
           } else {
