@@ -11,6 +11,7 @@ Support following features.
 * Updating columns by specified expression(fixed value or dynamic value)
 * Ordering columns
 * Formatting sql to one line format and separate column list using `','`
+* Generating csv files from insert sql
 * Supports column position based operations for sql without column list such as `"insert into xxxx values('123',NULL,'0');"`
 * Supports position based column value reference (variable name format: `column{position}`) such as `--column-values=#column1`
 * Supports adding column at any position
@@ -110,6 +111,10 @@ Search files that matches conditions specified by `--dir` and `--files`.
        indicate that adding column at after specified column name
   --after-by-position
        indicate that adding column at after specified column position
+  --delimiter
+       delimiter character (default: ","); can use only on 'generating-csv'
+  --ignore-escaped-enclosure
+       whether ignore escape an enclosing character on writing (default: false); can use only on 'generating-csv'
   --h (--help)
        print help
 
@@ -194,6 +199,23 @@ Search files that matches conditions specified by `--dir` and `--files`.
     ↓
   ------------------------
   insert into xxxx (a,b,c) values ('123',1,'0');
+  ------------------------
+
+[Usage: generating-csv]
+  Generating csv file from insert sql.
+  e.g.) --command=generating-csv --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=d,e,f
+  ------------------------
+  insert into xxxx (a,b,c) values ('0','123',1);
+  insert into yyyy values ('1','555',null);
+  ------------------------
+    ↓
+  -------xxxx.csv---------
+  a,b,c
+  0,123,1
+  ------------------------
+  -------yyyy.csv---------
+  d,e,f
+  1,555,null
   ------------------------
 
 [INFO] ------------------------------------------------------------------------

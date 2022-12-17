@@ -125,6 +125,14 @@ class SqlBulkCommandsApplicationRunnerTests {
   }
 
   @Test
+  void generatingCsv() throws IOException {
+    String[] args = { "--command=generating-csv", "--files=q.sql",
+        "--dir=target/test-classes/data", "--column-names=g,h,i",
+        "--table-definition-files=src/test/resources/table-definitions.yml" };
+    runner.run(new DefaultApplicationArguments(args));
+  }
+
+  @Test
   void noArgs() throws IOException {
     String[] args = {};
     runner.run(new DefaultApplicationArguments(args));

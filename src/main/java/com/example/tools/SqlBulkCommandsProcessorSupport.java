@@ -23,17 +23,17 @@ import java.util.stream.Collectors;
 abstract class SqlBulkCommandsProcessorSupport {
 
   // for "insert into xxxx values (....);"
-  private static final Pattern VALUES_PATTERN = Pattern.compile("(^.+values *\\()(.+)(\\);$)",
+  protected static final Pattern VALUES_PATTERN = Pattern.compile("(^.+values *\\()(.+)(\\);$)",
       Pattern.CASE_INSENSITIVE);
 
   // for "insert into xxxx (...) values (....);"
-  private static final Pattern COLUMNS_VALUES_PATTERN = Pattern.compile("(^.+\\()(.+)(\\) +values *\\()(.+)(\\);$)",
+  protected static final Pattern COLUMNS_VALUES_PATTERN = Pattern.compile("(^.+\\()(.+)(\\) +values *\\()(.+)(\\);$)",
       Pattern.CASE_INSENSITIVE);
 
   private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
-
+  
   void execute(List<String> columnNames, List<Integer> columnPositions, List<String> columnValues, Path file,
       Charset encoding,
       Map<String, Object> valueMappings, Map<String, Object> tableDefinitions) {
@@ -45,22 +45,7 @@ abstract class SqlBulkCommandsProcessorSupport {
         return;
       }
 
-      List<String> formattedLines = new ArrayList<>();
-      StringBuilder sb = new StringBuilder();
-      for (String line : lines) {
-        String trimmedLine = line.trim();
-        sb.append(trimmedLine);
-        if (trimmedLine.isEmpty() || trimmedLine.startsWith("--") || (trimmedLine.startsWith("/*")
-            && trimmedLine.endsWith("*/"))) {
-          formattedLines.add(trimmedLine);
-          sb.setLength(0);
-        } else if (trimmedLine.endsWith(";")) {
-          formattedLines.add(sb.toString());
-          sb.setLength(0);
-        } else {
-          sb.append(" ");
-        }
-      }
+      List<String> formattedLines = toFormattedLines(lines);
 
       List<String> saveLines = new ArrayList<>();
       for (String line : formattedLines) {
@@ -108,9 +93,31 @@ abstract class SqlBulkCommandsProcessorSupport {
     }
   }
 
-  protected abstract String generateSql(String tableName, String sqlTemplate, String columns, String values,
+  protected List<String> toFormattedLines(List<String> lines) {
+    List<String> formattedLines = new ArrayList<>();
+    StringBuilder sb = new StringBuilder();
+    for (String line : lines) {
+      String trimmedLine = line.trim();
+      sb.append(trimmedLine);
+      if (trimmedLine.isEmpty() || trimmedLine.startsWith("--") || (trimmedLine.startsWith("/*")
+          && trimmedLine.endsWith("*/"))) {
+        formattedLines.add(trimmedLine);
+        sb.setLength(0);
+      } else if (trimmedLine.endsWith(";")) {
+        formattedLines.add(sb.toString());
+        sb.setLength(0);
+      } else {
+        sb.append(" ");
+      }
+    }
+    return formattedLines;
+  }
+
+  protected String generateSql(String tableName, String sqlTemplate, String columns, String values,
       List<String> columnNames, List<Integer> columnIndexes,
-      List<String> columnValues, Map<String, Object> valueMappings, Map<String, Object> tableDefinitions);
+      List<String> columnValues, Map<String, Object> valueMappings, Map<String, Object> tableDefinitions){
+    return null;
+  }
 
   @SuppressWarnings("unchecked")
   protected List<String> getHeaderColumns(String tableName, String columns, Map<String, Object> tableDefinitions) {

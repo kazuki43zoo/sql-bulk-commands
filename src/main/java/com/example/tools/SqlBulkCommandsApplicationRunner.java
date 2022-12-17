@@ -77,6 +77,10 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("       indicate that adding column at after specified column name");
       System.out.println("  --after-by-position");
       System.out.println("       indicate that adding column at after specified column position");
+      System.out.println("  --delimiter");
+      System.out.println("       delimiter character (default: \",\"); can use only on 'generating-csv'");
+      System.out.println("  --ignore-escaped-enclosure");
+      System.out.println("       whether ignore escape an enclosing character on writing (default: false); can use only on 'generating-csv'");
       System.out.println("  --h (--help)");
       System.out.println("       print help");
       System.out.println();
@@ -172,6 +176,24 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       System.out.println("    ↓");
       System.out.println("  ------------------------");
       System.out.println("  insert into xxxx (a,b,c) values ('123',1,'0');");
+      System.out.println("  ------------------------");
+      System.out.println();
+      System.out.println("[Usage: generating-csv]");
+      System.out.println("  Generating csv file from insert sql.");
+      System.out.println(
+          "  e.g.) --command=generating-csv --dir=src/test/resources/data --files=xxx.sql,yyy.sql --column-names=d,e,f");
+      System.out.println("  ------------------------");
+      System.out.println("  insert into xxxx (a,b,c) values ('0','123',1);");
+      System.out.println("  insert into yyyy values ('1','555',null);");
+      System.out.println("  ------------------------");
+      System.out.println("    ↓");
+      System.out.println("  -------xxxx.csv---------");
+      System.out.println("  a,b,c");
+      System.out.println("  0,123,1");
+      System.out.println("  ------------------------");
+      System.out.println("  -------yyyy.csv---------");
+      System.out.println("  d,e,f");
+      System.out.println("  1,555,null");
       System.out.println("  ------------------------");
       System.out.println();
       return;
@@ -276,10 +298,17 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       addingTarget = null;
     }
 
+    String delimiter = args.containsOption("delimiter") ?
+        args.getOptionValues("delimiter").stream().findFirst().orElse(",") :
+        ",";
+
+    Boolean ignoreEscapedEnclosure = args.containsOption("ignore-escaped-enclosure") &&
+        Boolean.parseBoolean(args.getOptionValues("ignore-escaped-enclosure").stream().findFirst().orElse(null));
+
     LOGGER.info(
-        "Start. command:{} dir:{} files:{} encoding:{} column-names:{} column-positions:{} column-values:{} value-mappings:{} table-definitions:{} adding-type:{} adding-target:{}",
+        "Start. command:{} dir:{} files:{} encoding:{} column-names:{} column-positions:{} column-values:{} value-mappings:{} table-definitions:{} adding-type:{} adding-target:{} delimiter:{} ignore-escaped-enclosure:{}",
         command, dir, files, encoding, columnNames, columnPositions, columnValues, valueMappings, tableDefinitions,
-        addingMethod, addingTarget);
+        addingMethod, addingTarget, delimiter, ignoreEscapedEnclosure);
 
     try {
       Files.walk(Paths.get(dir))
@@ -287,7 +316,7 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
           .filter(file -> files.stream().anyMatch(x -> file.toString().replace('\\', '/').endsWith(x)))
           .sorted().forEach(
               file -> execute(command, columnNames, columnPositions, columnValues, file, encoding, valueMappings,
-                  tableDefinitions, addingMethod, addingTarget));
+                  tableDefinitions, addingMethod, addingTarget, delimiter, ignoreEscapedEnclosure));
     }
     catch (IllegalArgumentException e) {
       this.exitCode = 2;
@@ -302,7 +331,7 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       List<String> columnValues,
       Path file, Charset encoding,
       Map<String, Object> valueMappings, Map<String, Object> tableDefinitions, String addingMethod,
-      String addingTarget) {
+      String addingTarget, String delimiter, Boolean ignoreEscapedEnclosure) {
     LOGGER.info("processing file:{}", file);
     switch (command) {
     case "adding-columns":
@@ -348,9 +377,13 @@ public class SqlBulkCommandsApplicationRunner implements ApplicationRunner, Exit
       FormattingProcessor.INSTANCE.execute(columnNames, columnPositions, columnValues, file, encoding, valueMappings,
           tableDefinitions);
       break;
+    case "generating-csv":
+      GeneratingCsvProcessor.INSTANCE.execute(columnNames, file, encoding, tableDefinitions, delimiter,
+          ignoreEscapedEnclosure);
+      break;
     default:
       throw new IllegalArgumentException(String.format("'%s' command not support. valid-commands:%s", command,
-          "[adding-columns, deleting-columns, updating-columns, ordering-columns, formatting]"));
+          "[adding-columns, deleting-columns, updating-columns, ordering-columns, formatting, generating-csv]"));
     }
 
   }
