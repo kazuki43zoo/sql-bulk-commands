@@ -33,7 +33,7 @@ abstract class SqlBulkCommandsProcessorSupport {
   private static final ExpressionParser EXPRESSION_PARSER = new SpelExpressionParser();
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
-  
+
   void execute(List<String> columnNames, List<Integer> columnPositions, List<String> columnValues, Path file,
       Charset encoding,
       Map<String, Object> valueMappings, Map<String, Object> tableDefinitions) {
@@ -104,7 +104,7 @@ abstract class SqlBulkCommandsProcessorSupport {
         formattedLines.add(trimmedLine);
         sb.setLength(0);
       } else if (trimmedLine.endsWith(";")) {
-        formattedLines.add(sb.toString());
+        formattedLines.add(sb.toString().replaceAll(";+$", ";"));
         sb.setLength(0);
       } else {
         sb.append(" ");
@@ -115,7 +115,7 @@ abstract class SqlBulkCommandsProcessorSupport {
 
   protected String generateSql(String tableName, String sqlTemplate, String columns, String values,
       List<String> columnNames, List<Integer> columnIndexes,
-      List<String> columnValues, Map<String, Object> valueMappings, Map<String, Object> tableDefinitions){
+      List<String> columnValues, Map<String, Object> valueMappings, Map<String, Object> tableDefinitions) {
     return null;
   }
 
@@ -132,6 +132,44 @@ abstract class SqlBulkCommandsProcessorSupport {
               Collectors.toList());
     }
     return headerColumns;
+  }
+
+  protected List<String> commaDelimitedList(String line) {
+    return Arrays.stream(StringUtils.commaDelimitedListToStringArray(escapeComma(line)))
+        .map(x -> x.contains("__COMMA__") ? x.replaceAll("__COMMA__", ",") : x)
+        .collect(Collectors.toList());
+  }
+
+  private String escapeComma(String line) {
+    Map<Character, Character> enclosingMap = new HashMap<>();
+    enclosingMap.put('(', ')');
+    enclosingMap.put('{', '}');
+    enclosingMap.put('[', ']');
+    if (line.contains("(") || line.contains("{") || line.contains("[")) {
+      StringBuilder sb = new StringBuilder();
+      List<Character> stack = new ArrayList<>();
+      for (char c : line.toCharArray()) {
+        if (enclosingMap.containsKey(c)) {
+          sb.append(c);
+          stack.add(enclosingMap.get(c));
+        } else if (enclosingMap.containsValue(c)) {
+          sb.append(c);
+          if (stack.contains(c)) {
+            stack.remove(stack.indexOf(c));
+          }
+        } else if (c == ',') {
+          if (stack.isEmpty()) {
+            sb.append(c);
+          } else {
+            sb.append("__COMMA__");
+          }
+        } else {
+          sb.append(c);
+        }
+      }
+      return sb.toString();
+    }
+    return line;
   }
 
   protected EvaluationContext createEvaluationContext(Map<String, Integer> headerIndexMap, List<String> valueColumns,

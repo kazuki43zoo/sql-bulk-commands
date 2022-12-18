@@ -20,9 +20,8 @@ public class FormattingProcessor extends SqlBulkCommandsProcessorSupport {
       List<String> columnNames, List<Integer> columnIndexes,
       List<String> columnValues, Map<String, Object> valueMappings, Map<String, Object> tableDefinitions) {
     List<String> headerColumns = getHeaderColumns(tableName, columns, tableDefinitions);
-    List<String> valueColumns = Arrays.stream(StringUtils.commaDelimitedListToStringArray(values)).map(String::trim)
-        .collect(
-            Collectors.toList());
+    List<String> valueColumns = commaDelimitedList(values).stream().map(String::trim)
+        .collect(Collectors.toList());
     return formatSql(sqlTemplate, columns, headerColumns, valueColumns);
   }
 

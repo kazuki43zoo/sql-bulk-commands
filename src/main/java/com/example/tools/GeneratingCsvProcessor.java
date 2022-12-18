@@ -4,7 +4,6 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.transform.ExtractorLineAggregator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.util.StringUtils;
 import org.springframework.batch.item.ItemStreamWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 
@@ -17,11 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -67,12 +64,11 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
           Matcher matcher = VALUES_PATTERN.matcher(line);
           if (matcher.find()) {
             columns = Collections.emptyList();
-            values = Arrays.stream(StringUtils.commaDelimitedListToStringArray(matcher.group(2)))
+            values = commaDelimitedList(matcher.group(2)).stream()
                 .map(String::trim)
                 .map(x -> x.equals("null") ? "NULL" : x)
                 .map(x -> x.replaceAll("^'|'$|^\"|\"$", ""))
-                .collect(
-                    Collectors.toList());
+                .collect(Collectors.toList());
           } else {
             throw new UnsupportedOperationException("Skip operation because does not sql format. sql:" + line);
           }
@@ -80,12 +76,11 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
           Matcher matcher = COLUMNS_VALUES_PATTERN.matcher(line);
           if (matcher.find()) {
             columns = getHeaderColumns(tableName, matcher.group(2), Collections.emptyMap());
-            values = Arrays.stream(StringUtils.commaDelimitedListToStringArray(matcher.group(4)))
+            values = commaDelimitedList(matcher.group(4)).stream()
                 .map(String::trim)
                 .map(x -> x.equals("null") ? "NULL" : x)
                 .map(x -> x.replaceAll("^'|'$|^\"|\"$", ""))
-                .collect(
-                    Collectors.toList());
+                .collect(Collectors.toList());
           } else {
             throw new UnsupportedOperationException("Skip operation because does not sql format. sql:" + line);
           }
@@ -105,7 +100,7 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
         valuesLines.add(0, headerColumns.toArray(new String[0]));
         Path csvFile = file.getParent().resolve(tableName + ".csv");
         logger.info("Generating csv file. tableName:{} file:{}", tableName, csvFile);
-        writeLines(valuesLines, csvFile, encoding, null, null);
+        writeLines(valuesLines, csvFile, encoding, delimiter, ignoreEscapedEnclosure);
       }
       for (Map.Entry<String, String> entry : truncateTableSql.entrySet()) {
         Files.write(file.getParent().resolve("truncate_" + entry.getKey() + ".sql"),
