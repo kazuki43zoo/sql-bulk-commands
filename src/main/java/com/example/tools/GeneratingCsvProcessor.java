@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -44,9 +46,16 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
 
       Map<String, List<String>> columnsMap = new HashMap<>();
       Map<String, List<String[]>> valuesLinesMap = new HashMap<>();
+      Set<String> truncateTableNames = new HashSet<>();
 
       for (String line : formattedLines) {
         String loweredLine = line.toLowerCase();
+        if (loweredLine.startsWith("truncate")) {
+          loweredLine = loweredLine.replaceAll("truncate +table +", "");
+          String tableName = loweredLine.substring(0, loweredLine.indexOf(";"));
+          truncateTableNames.add(tableName);
+          continue;
+        }
         if (!loweredLine.startsWith("insert")) {
           continue;
         }
@@ -99,7 +108,10 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
         logger.info("Generating csv file. tableName:{} file:{}", tableName, csvFile);
         writeLines(valuesLines, csvFile, encoding, null, null);
       }
-
+      for (String tableName : truncateTableNames) {
+        Files.write(file.getParent().resolve("truncate_" + tableName + ".sql"),
+            Collections.singleton("TRUNCATE TABLE " + tableName + ";"), encoding);
+      }
     }
     catch (IOException e) {
       throw new UncheckedIOException(e);
