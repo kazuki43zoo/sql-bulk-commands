@@ -46,14 +46,13 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
 
       Map<String, List<String>> columnsMap = new HashMap<>();
       Map<String, List<String[]>> valuesLinesMap = new HashMap<>();
-      Set<String> truncateTableNames = new HashSet<>();
+      Map<String, String> truncateTableSql = new HashMap<>();
 
       for (String line : formattedLines) {
         String loweredLine = line.toLowerCase();
         if (loweredLine.startsWith("truncate")) {
-          loweredLine = loweredLine.replaceAll("truncate +table +", "");
-          String tableName = loweredLine.substring(0, loweredLine.indexOf(";"));
-          truncateTableNames.add(tableName);
+          String tableName = loweredLine.substring(loweredLine.lastIndexOf(" "), loweredLine.indexOf(";"));
+          truncateTableSql.put(tableName, loweredLine);
           continue;
         }
         if (!loweredLine.startsWith("insert")) {
@@ -108,9 +107,9 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
         logger.info("Generating csv file. tableName:{} file:{}", tableName, csvFile);
         writeLines(valuesLines, csvFile, encoding, null, null);
       }
-      for (String tableName : truncateTableNames) {
-        Files.write(file.getParent().resolve("truncate_" + tableName + ".sql"),
-            Collections.singleton("TRUNCATE TABLE " + tableName + ";"), encoding);
+      for (Map.Entry<String, String> entry : truncateTableSql.entrySet()) {
+        Files.write(file.getParent().resolve("truncate_" + entry.getKey() + ".sql"),
+            Collections.singleton(entry.getValue()), encoding);
       }
     }
     catch (IOException e) {

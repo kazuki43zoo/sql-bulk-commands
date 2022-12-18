@@ -1,6 +1,6 @@
 truncate table aaa;
 truncate table bbb;
-truncate table ccc;
+truncate ccc;
 
 INSERT INTO aaa (a,b,c) VALUES ('10',1,null);
 INSERT INTO bbb (d,e,f) VALUES ("20",2,NULL);
