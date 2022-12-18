@@ -51,7 +51,7 @@ public class GeneratingCsvProcessor extends SqlBulkCommandsProcessorSupport {
       for (String line : formattedLines) {
         String loweredLine = line.toLowerCase();
         if (loweredLine.startsWith("truncate")) {
-          String tableName = loweredLine.substring(loweredLine.lastIndexOf(" "), loweredLine.indexOf(";"));
+          String tableName = loweredLine.substring(loweredLine.lastIndexOf(" "), loweredLine.indexOf(";")).trim();
           truncateTableSql.put(tableName, loweredLine);
           continue;
         }
